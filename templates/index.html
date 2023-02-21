@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SayHi</title>
+    <link href="https://fonts.googleapis.com/css?family=Kanit&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<style>
+    * {
+        font-family: 'Kanit', sans-serif;
+    }
+
+    .container {
+        margin-top: 100px;
+        background: #F1F7B5;
+        border-radius: 10px;
+        padding: 20px;
+        width: 500px;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+    }
+</style>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center mt-5">{{ data }}</h1>
+            </div>
+            <div class="col-12">
+                <div class="mb-3">
+                    <label for="name" class="form-label">ชื่อ</label>
+                    <input type="text" class="form-control" id="name" name="name">
+                </div>
+                <button type="submit" class="btn btn-primary" onclick="submit();">ยิง!</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    window.onload = function () {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        Toast.fire({
+            icon: 'success',
+            title: 'ยินดีต้อนรับ {{ data[3:] }}'
+        })
+    }
+
+    function submit() {
+        const name = document.getElementById('name').value;
+        data = {
+            name: name
+        }
+        $.ajax({
+            url: 'http://127.0.0.1:5000/set_name',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function (response) {
+                Swal.fire({
+                    title: 'ทำรายการสำเร็จ',
+                    text: response,
+                    icon: 'success',
+                    confirmButtonText: 'ตกลง'
+                })
+                setTimeout(function () {
+                    location.reload();
+                }, 5000);
+            }
+        });
+    }
+</script>
+</html>
